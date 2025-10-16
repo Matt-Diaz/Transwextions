@@ -1,9 +1,11 @@
+using Radzen;
 using Transwextions.App.Components;
 using Transwextions.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAppDatabase(builder.Environment);
+builder.Services.AddRadzenComponents();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
