@@ -18,3 +18,27 @@
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.app {
+    width: 100vw;
+    height: 100vh;
+    background-color: #0e2f56;
+}
+
+::deep .side-bar-image {
+    width:365px;
+}
+
+::deep .side-bar {
+    margin: 20px;
+    border-radius: 15px;
+    width: 400px;
+    background-color: #007acc;
+}
+
+@media (max-width: 868px) {
+    /* Your CSS styles for screen widths of 868px and less go here */
+    .app {
+        background-color: lightblue;
+    }
+}

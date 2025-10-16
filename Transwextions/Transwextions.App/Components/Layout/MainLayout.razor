@@ -1,6 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<div class="app">
+    <RadzenStack Orientation="Orientation.Horizontal" class="rz-w-100 rz-h-100">
+        <RadzenCard class="side-bar">
+          <RadzenImage Path="./images/logo.png" class="side-bar-image"/>
+        </RadzenCard>
+        <div>
+            @Body
+        </div>
+    </RadzenStack>
+</div>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
