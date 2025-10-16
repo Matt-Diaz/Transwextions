@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Transwextions.App/Transwextions.App.csproj" />
+  <Project Path="Transwextions.Data/Transwextions.Data.csproj" />
+</Solution>
