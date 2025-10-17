@@ -24,23 +24,19 @@
         height: 100vh;
     }
 
-.total-transactions-container {
-    width: 100%;
-    text-align:center;
-    overflow-y: auto;
-    margin-bottom: 25px;
-}
-
 ::deep .total-transactions-amount {
     color: #1e2b1e;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 ::deep .total-transactions-title {
     text-align: center;
     color: #3f3f3f;
     font-size: 15px;
+    font-style: italic;
 }
 
 ::deep .welcome-text {
@@ -49,6 +45,14 @@
     font-size: 39px;
     color: white;
     align-content: center;
+}
+
+::deep .main-sidebar {
+    background: #9fe98c;
+    width: 350px;
+    overflow: hidden;
+    border-radius: 20px 20px 20px 20px;
+    margin: 8px;
 }
 
 .logo-container {
@@ -61,7 +65,7 @@
 
 .sidebar-container {
     width: 350px;
-    height: 100vh;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -69,12 +73,6 @@
 .profile-info-container {
    height: 60px;
    margin-bottom: 30px;
-}
-
-.new-transaction-btn-container {
-    text-align:center;
-    width: 100%;
-
 }
 
 .mobile-header-container {
@@ -86,9 +84,23 @@
     object-fit: fill;
 }
 
+::deep .sidebar-image-small {
+    display: none;
+    height: 100%;
+    object-fit: fill;
+    height:70px;
+}
+
 ::deep .app-header {
     display: none;
 }
+
+::deep .new-transaction-btn {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 
 @media (max-width: 800px) {
     .mobile-header-container {
@@ -113,20 +125,30 @@
         font-size: 14px;
     }
 
-    .total-transactions-container {
-        margin-bottom: 0px;
-        width: 180px;
-    }
-
-    .new-transaction-btn-container {
-        width: 240px;
-    }
-
     ::deep .mobile-header-stack {
         justify-content: space-between !important;
     }
 
     ::deep .app-header {
         display: block;
+    }
+
+    ::deep .pay-now-btn {
+        margin-right: 10px;
+    }
+}
+
+@media (max-height: 435px) {
+    ::deep .sidebar-image-small {
+        display: block;
+        height: 47px;
+    }
+
+    ::deep .sidebar-image {
+        display: none;
+    }
+
+    .logo-container {
+        height : auto;
     }
 }
