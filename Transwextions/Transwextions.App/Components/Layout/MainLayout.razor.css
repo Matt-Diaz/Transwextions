@@ -19,26 +19,114 @@
         top: 0.5rem;
     }
 
-.app {
-    width: 100vw;
-    height: 100vh;
-    background-color: #0e2f56;
-}
-
-::deep .side-bar-image {
-    width:365px;
-}
-
-::deep .side-bar {
-    margin: 20px;
-    border-radius: 15px;
-    width: 400px;
-    background-color: #007acc;
-}
-
-@media (max-width: 868px) {
-    /* Your CSS styles for screen widths of 868px and less go here */
     .app {
-        background-color: lightblue;
+        width: 100vw;
+        height: 100vh;
+    }
+
+.total-transactions-container {
+    width: 100%;
+    text-align:center;
+    overflow-y: auto;
+    margin-bottom: 25px;
+}
+
+::deep .total-transactions-amount {
+    color: #1e2b1e;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+::deep .total-transactions-title {
+    text-align: center;
+    color: #3f3f3f;
+    font-size: 15px;
+}
+
+::deep .welcome-text {
+    text-align: center;
+    font-family: Signatra;
+    font-size: 39px;
+    color: white;
+    align-content: center;
+}
+
+.logo-container {
+    width: 100%;
+    height: 190px;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-container {
+    width: 350px;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.profile-info-container {
+   height: 60px;
+   margin-bottom: 30px;
+}
+
+.new-transaction-btn-container {
+    text-align:center;
+    width: 100%;
+
+}
+
+.mobile-header-container {
+    display: none;
+}
+
+::deep .sidebar-image {
+    height: 100%;
+    object-fit: fill;
+}
+
+::deep .app-header {
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .mobile-header-container {
+        display: block;
+    }
+
+    .profile-info-container {
+        margin-bottom: 0px;
+    }
+
+    .logo-container {
+        margin-bottom: 0px;
+    }
+
+    ::deep .welcome-text {
+        color: black;
+        font-size: 22px;
+    }
+
+    ::deep .total-transactions-amount {
+        margin-bottom: 0px;
+        font-size: 14px;
+    }
+
+    .total-transactions-container {
+        margin-bottom: 0px;
+        width: 180px;
+    }
+
+    .new-transaction-btn-container {
+        width: 240px;
+    }
+
+    ::deep .mobile-header-stack {
+        justify-content: space-between !important;
+    }
+
+    ::deep .app-header {
+        display: block;
     }
 }
