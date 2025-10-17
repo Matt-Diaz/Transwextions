@@ -1,0 +1,43 @@
+﻿@using Transwextions.Data.Models
+<div class="component">
+    <RadzenTemplateForm TItem="UserModel" Data=@Model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+            <div class="logo-image-container">
+                <RadzenImage Path="./images/logo-small.png" class="sidebar-image-small" />
+            </div>
+            <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H4" Text="Welcome!" />
+            <RadzenFormField Text="Name" Variant="Variant.Flat">
+                <Start>
+                    <RadzenIcon Icon="account_circle" />
+                </Start>
+                <ChildContent>
+                    <RadzenTextBox Name="Username" @bind-Value=@Model.Username />
+                    <RadzenLengthValidator Component="Username" Min="3" Text="Name should be at least 1 character" />
+                    <RadzenLengthValidator Component="Username" Max="20" Text="Name should be at most 20 characters" />
+                </ChildContent>
+            </RadzenFormField>
+
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Text="Ok" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>
+
+@code {
+    private UserModel Model { get; set; } = new();
+
+    private void OnSubmit()
+    {
+        if (string.IsNullOrWhiteSpace(Model.Username) || Model.Username.Length < 1 || Model.Username.Length > 20)
+        {
+            _notificationService.Notify(NotificationSeverity.Warning, "Name must be at least 1 character and at most 20 characters.");
+            return;
+        }
+
+        _dialogService.Close(Model);
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _notificationService.Notify(NotificationSeverity.Warning, "Please correct the errors in the form.");
+    }
+}

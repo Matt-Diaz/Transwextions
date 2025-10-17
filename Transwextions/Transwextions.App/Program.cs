@@ -1,5 +1,7 @@
 using Radzen;
 using Transwextions.App.Components;
+using Transwextions.App.Services;
+using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
+
+builder.Services.AddSingleton<IUserStateService, UserStateService>();
 
 var app = builder.Build();
 
