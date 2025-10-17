@@ -12,19 +12,16 @@
                             <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
                             <RadzenText class="welcome-text" Text="Welcome, Matt!" />
                         </RadzenStack>
-               
                         <RadzenText Text="$123.00" class="total-transactions-amount" />
-                
-                        <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" />
-                 
+                        <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" class="pay-now-btn"/>
                 </RadzenStack>
             </div>
-         
         </RadzenHeader>
-        <RadzenSidebar ResponsiveMaxWidth="800px" Style="background:#9fe98c;width: 350px; overflow:hidden;" FullHeight="true" @bind-Expanded="@sidebarExpanded">
+        <RadzenSidebar ResponsiveMaxWidth="800px" class="main-sidebar" FullHeight="true" @bind-Expanded="@sidebarExpanded">
             <div class="sidebar-container">
                 <div class="logo-container">
                     <RadzenImage Path="./images/logo.png" class="sidebar-image" />
+                    <RadzenImage Path="./images/logo-small.png" class="sidebar-image-small" />
                 </div>
                 <div class="profile-info-container">
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
@@ -32,15 +29,14 @@
                         <RadzenText class="welcome-text" Text="Welcome, Matt!"/>
                     </RadzenStack>
                 </div>
-                <div class="total-transactions-title-container">
+            
                     <RadzenText Text="Total Transactions" class="total-transactions-title" />
-                </div>
-                <div class="total-transactions-container">
+               
+              
                     <RadzenText Text="$123.00" class="total-transactions-amount" />
-                </div>
-                <div class="new-transaction-btn-container">
-                    <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now"/>
-                </div>
+               
+                <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now!" class="new-transaction-btn" />
+                
             </div>
         </RadzenSidebar>
         <RadzenBody>
