@@ -1,23 +1,25 @@
-﻿@inherits LayoutComponentBase
+﻿@using Transwextions.App.Services.Interfaces
+@using Transwextions.App.Components.Modals;
+@inherits LayoutComponentBase
 @rendermode InteractiveServer
 
 <RadzenComponents @rendermode="InteractiveServer" />
 
 <div class="app">
-    <RadzenLayout>
+    <RadzenLayout Visible="@IsLoggedIn">
         <RadzenHeader class="app-header">
             <div class="mobile-header-container">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" class="mobile-header-stack">
-                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
-                            <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
-                            <RadzenText class="welcome-text" Text="Welcome, Matt!" />
-                        </RadzenStack>
-                        <RadzenText Text="$123.00" class="total-transactions-amount" />
-                        <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" class="pay-now-btn"/>
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+                        <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
+                        <RadzenText class="welcome-text" Text="@GetWelcomeText()" />
+                    </RadzenStack>
+                    <RadzenText Text="$123.00" class="total-transactions-amount" />
+                    <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" class="pay-now-btn" />
                 </RadzenStack>
             </div>
         </RadzenHeader>
-        <RadzenSidebar ResponsiveMaxWidth="800px" class="main-sidebar" FullHeight="true" @bind-Expanded="@sidebarExpanded">
+        <RadzenSidebar ResponsiveMaxWidth="800px" class="main-sidebar" FullHeight="true" @bind-Expanded="@SidebarExpanded">
             <div class="sidebar-container">
                 <div class="logo-container">
                     <RadzenImage Path="./images/logo.png" class="sidebar-image" />
@@ -25,18 +27,14 @@
                 </div>
                 <div class="profile-info-container">
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
-                        <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;"/>
-                        <RadzenText class="welcome-text" Text="Welcome, Matt!"/>
+                        <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
+                        <RadzenText class="welcome-text" Text="@GetWelcomeText()" />
                     </RadzenStack>
                 </div>
-            
-                    <RadzenText Text="Total Transactions" class="total-transactions-title" />
-               
-              
-                    <RadzenText Text="$123.00" class="total-transactions-amount" />
-               
+
+                <RadzenText Text="Total Transactions" class="total-transactions-title" />
+                <RadzenText Text="$123.00" class="total-transactions-amount" />
                 <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now!" class="new-transaction-btn" />
-                
             </div>
         </RadzenSidebar>
         <RadzenBody>
@@ -46,6 +44,3 @@
         </RadzenBody>
     </RadzenLayout>
 </div>
-@code {
-    bool sidebarExpanded = true;
-}
