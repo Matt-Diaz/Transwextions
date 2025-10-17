@@ -417,3 +417,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /Transwextions/Transwextions.App/appsettings.json
+/Transwextions/Transwextions.App/data/app.db
+/Transwextions/Transwextions.App/data/app.db-shm
+/Transwextions/Transwextions.App/data/app.db-wal
+/Transwextions/Transwextions.App/appsettings.Development.json
