@@ -16,6 +16,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddRadzenComponents();
 
 builder.Services.AddSingleton<IUserStateService, UserStateService>();
+builder.Services.AddScoped<ITransactionService, TransactionsService>();
 
 var app = builder.Build();
 

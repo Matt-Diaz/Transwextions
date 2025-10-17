@@ -8,4 +8,5 @@ public class TransactionModel
     public ulong AmountTotalCents { get; set; }
     public DateTime TransactionDateUtc { get; set; }
     public Guid UniqueIdentifier { get; set; }
+    public bool IsDeleted { get; set; }
 }
