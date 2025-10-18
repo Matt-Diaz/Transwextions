@@ -15,7 +15,7 @@
                         <RadzenText class="welcome-text" Text="@GetWelcomeText()" />
                     </RadzenStack>
                     <RadzenText Text="@GetTransactionsTotalText()" class="total-transactions-amount" />
-                    <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" class="pay-now-btn" />
+                    <RadzenButton Click="PayNowButton_OnClick" Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" Icon="finance_chip" Text="Pay Now" class="pay-now-btn" />
                 </RadzenStack>
             </div>
         </RadzenHeader>
@@ -38,7 +38,7 @@
             </div>
         </RadzenSidebar>
         <RadzenBody>
-            <div class="rz-p-4">
+            <div class="rz-p-1">
                 @Body
             </div>
         </RadzenBody>
