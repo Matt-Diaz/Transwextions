@@ -36,7 +36,7 @@
 
 @code {
     private decimal Value { get; set; } = 1.00M;
-    private string? Description { get; set; } = null;
+    private string Description { get; set; } = string.Empty;
     private PayNowModel Model { get; set; } = new();
 
     private void CancelButton_OnClick()
@@ -49,8 +49,14 @@
 
     }
 
-    private void OnValidSubmit(PayNowModel model)
+    private void OnValidSubmit()
     {
+        var model = new PayNowModel()
+            {
+                Amount = Value,
+                Description = Description
+            };
+
         _dialogService.Close(model);
     }
 }
