@@ -5,11 +5,11 @@
 
 <div class="component">
     <RadzenDataGrid TItem="TransactionModel"
-                    Data="@_all"
+                    Data="@TransactionsData"
                     AllowPaging="false"
                     AllowSorting="true"
                     Responsive="true"
-                    IsLoading="@isLoading"
+                    IsLoading="@IsLoading"
                     ColumnWidth="200px"
                     EmptyText="No transactions yet.">
 
@@ -21,20 +21,19 @@
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="TransactionModel" Property="Description" Title="Details" />
             <RadzenDataGridColumn TItem="TransactionModel" Property="TransactionDate" Title="Transaction Date" Filterable="false">
-                <Template Context="t">@t.TransactionDateUtc.ToString("yyyy-MM-dd")</Template>
+                <Template Context="context">@context.TransactionDateUtc.ToString("yyyy-MM-dd")</Template>
             </RadzenDataGridColumn>
 
-            <!-- Amount is stored in cents; display dollars -->
             <RadzenDataGridColumn TItem="TransactionModel" Title="Amount (USD)" Sortable="false" Filterable="false" TextAlign="TextAlign.Right" Width="160px">
-                <Template Context="t">
-                    @((t.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))
+                <Template Context="context">
+                    @((context.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))
                 </Template>
             </RadzenDataGridColumn>
 
             <RadzenDataGridColumn TItem="TransactionModel" Title="Actions" Filterable="false" Sortable="false" Width="140px">
-                <Template Context="t">
-                    <RadzenButton Size="ButtonSize.Small" Text="View" Click="@(() => View(t))" Style="margin-right:6px" />
-                    <RadzenButton Size="ButtonSize.Small" Text="Delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => Delete(t))" />
+                <Template Context="context">
+                    <RadzenButton Size="ButtonSize.Small" Text="View" Click="@(() => View(context))" Style="margin-right:6px" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => Delete(context))" />
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -45,9 +44,8 @@
     private readonly ITransactionService _transactionService;
     public TransactionsDataTableComponent(ITransactionService transactionService) => _transactionService = transactionService;
 
-    int count;
-    bool isLoading;
-    IEnumerable<TransactionModel> _all = Array.Empty<TransactionModel>();
+    private bool IsLoading;
+    IEnumerable<TransactionModel> TransactionsData = Array.Empty<TransactionModel>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,9 +54,8 @@
 
     async Task LoadData()
     {
-        isLoading = true;
+        IsLoading = true;
 
-        // 1) Load everything (your current service)
         var result = await _transactionService.GetAllAsync();
         if (!result.IsSuccess || result.Object is null)
         {
@@ -66,16 +63,16 @@
             {
                 Severity = NotificationSeverity.Error,
                 Summary = "Error",
-                Detail = "Failed to load transactions: " + result.ErrorMessage,
+                Detail = "Failed to load transactions:" + result.ErrorMessage,
                 Duration = 4000
             });
-            isLoading = false;
+            IsLoading = false;
             return;
         }
 
-        _all = result.Object;
+        TransactionsData = result.Object;
 
-        isLoading = false;
+        IsLoading = false;
     }
 
     void View(TransactionModel t)
@@ -85,7 +82,6 @@
 
     async Task Delete(TransactionModel t)
     {
-        // call your service; then reload grid (DataGrid has Reload() if you give it @ref)
         _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Deleted", Detail = $"{t.Id}" });
     }
 }
