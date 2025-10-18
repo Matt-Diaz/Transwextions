@@ -62,6 +62,15 @@ public partial class MainLayout : IDisposable
         }
     }
 
+    private async void PayNowButton_OnClick()
+    {
+        var result = await _dialogService.OpenAsync<PayNowComponent>("Make a Payment", 
+            options: new DialogOptions() 
+            { 
+               ShowTitle = false
+            });
+    }
+
     private void OnUserStateChanged()
     {
         Username = _userStateService.Username;
