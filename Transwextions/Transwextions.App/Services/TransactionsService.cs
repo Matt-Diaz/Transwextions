@@ -29,6 +29,16 @@ public class TransactionsService : ITransactionService
         return ServiceResult<List<TransactionModel>>.Success(result);
     }
 
+    public async Task<ServiceResult<ulong?>> GetTransactionsTotalCents()
+    {
+        var result = await _context.Transactions
+            .AsNoTracking()
+            .Where(p => p.IsDeleted == false)
+            .SumAsync(p => (long)p.AmountTotalCents);
+
+        return ServiceResult<ulong?>.Success((ulong)result);
+    }
+
     public async Task<ServiceResult<object>> AddAsync(TransactionModel model, DateTime? transactionDateOverride = null)
     {
         try
