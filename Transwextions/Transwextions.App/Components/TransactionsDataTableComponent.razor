@@ -7,9 +7,8 @@
                     Data="@TransactionsData"
                     AllowPaging="false"
                     AllowSorting="true"
-                    Responsive="true"
+                    Responsive="false"
                     IsLoading="@IsLoading"
-                    ColumnWidth="200px"
                     EmptyText="No transactions yet.">
 
         <Columns>
@@ -18,7 +17,7 @@
                 <Template Context="context">@context.TransactionDateUtc.ToString("yyyy-MM-dd")</Template>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="TransactionModel" Title="Amount (USD)" Sortable="false" Filterable="false" TextAlign="TextAlign.Right" Width="160px">
+            <RadzenDataGridColumn TItem="TransactionModel" Title="Amount (USD)" Sortable="false" Filterable="false" TextAlign="TextAlign.Right">
                 <Template Context="context">
                     @((context.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))
                 </Template>
