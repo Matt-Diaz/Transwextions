@@ -1,4 +1,6 @@
 ﻿using Radzen;
+using Transwextions.App.Components.Modals;
+using Transwextions.App.Services;
 using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Models;
 
@@ -61,9 +63,19 @@ public partial class TransactionsDataTableComponent : IDisposable
         IsLoading = false;
     }
 
-    void View(TransactionModel t)
+    private async void View(TransactionModel model)
     {
-        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "View", Detail = $"{t.Id}" });
+        //_notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "View", Detail = $"{t.Id}" });
+        var result = await _dialogService.OpenAsync<ViewTransactionComponent>("View Transaction",
+        parameters: new Dictionary<string, object?>
+        {
+            { "Transaction", model }
+        },
+        options: new DialogOptions()
+        {
+            ShowTitle = true,
+            ShowClose = true
+        });
     }
 
     async Task Delete(TransactionModel t)
