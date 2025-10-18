@@ -1,0 +1,56 @@
+﻿@using Transwextions.Data.Models
+<div class="component">
+    <RadzenTemplateForm TItem="PayNowModel" Data="Model" InvalidSubmit="OnInvalidSubmit" Submit="OnValidSubmit">
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenText TextAlign="TextAlign.Center" Text="Enter payment information!" TextStyle="TextStyle.Caption" />
+            <RadzenFormField Variant="Variant.Text" Style="font-size: 30px;">
+                <Start>
+                    <RadzenIcon IconStyle="IconStyle.Success" class="dollar-icon" Icon="attach_money" />
+                </Start>
+                <ChildContent>
+                    <RadzenNumeric Name="Amount" Format="#.00" TValue="decimal" @bind-Value=Value Min="0" ShowUpDown="false" class="amount-input" />
+                </ChildContent>
+                <Helper>
+                    <RadzenNumericRangeValidator Component="Amount" Min="0.01" AllowNull="false" Text="Must be greater than $0.00" />
+                </Helper>
+            </RadzenFormField>
+            <RadzenFormField Text="What's this for?" Variant="Variant.Flat" Style="font-size: 30px;">
+                <ChildContent>
+                    <RadzenTextBox Name="Description" @bind-Value=Description />
+                </ChildContent>
+                <Helper>
+                    <RadzenLengthValidator Component="Description" Min="1" Text="Description is required!" />
+                    <RadzenLengthValidator Component="Description" Max="50" Text="Description character length must be less than or equal to 50" />
+                </Helper>
+                <End>
+                    <RadzenIcon Icon="checkbook" />
+                </End>
+            </RadzenFormField>
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenButton Size="ButtonSize.Large" Variant="Variant.Text" ButtonStyle="ButtonStyle.Danger" Click="CancelButton_OnClick">Cancel</RadzenButton>
+                <RadzenButton Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Success" ButtonType="ButtonType.Submit">Pay!</RadzenButton>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>
+
+@code {
+    private decimal Value { get; set; } = 1.00M;
+    private string? Description { get; set; } = null;
+    private PayNowModel Model { get; set; } = new();
+
+    private void CancelButton_OnClick()
+    {
+        _dialogService.Close(null);
+    }
+
+    private void OnInvalidSubmit()
+    {
+
+    }
+
+    private void OnValidSubmit(PayNowModel model)
+    {
+        _dialogService.Close(model);
+    }
+}
