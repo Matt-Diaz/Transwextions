@@ -1,0 +1,91 @@
+﻿@using System.Globalization
+@using Transwextions.App.Services.Interfaces
+@using Transwextions.Data.Models
+@inject NotificationService _notificationService
+
+<div class="component">
+    <RadzenDataGrid TItem="TransactionModel"
+                    Data="@_all"
+                    AllowPaging="false"
+                    AllowSorting="true"
+                    Responsive="true"
+                    IsLoading="@isLoading"
+                    ColumnWidth="200px"
+                    EmptyText="No transactions yet.">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="TransactionModel" Property="Guid" Title="Id" Width="200px">
+                <Template Context="context">
+                    @(context.UniqueIdentifier.ToString())
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TransactionModel" Property="Description" Title="Details" />
+            <RadzenDataGridColumn TItem="TransactionModel" Property="TransactionDate" Title="Transaction Date" Filterable="false">
+                <Template Context="t">@t.TransactionDateUtc.ToString("yyyy-MM-dd")</Template>
+            </RadzenDataGridColumn>
+
+            <!-- Amount is stored in cents; display dollars -->
+            <RadzenDataGridColumn TItem="TransactionModel" Title="Amount (USD)" Sortable="false" Filterable="false" TextAlign="TextAlign.Right" Width="160px">
+                <Template Context="t">
+                    @((t.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="TransactionModel" Title="Actions" Filterable="false" Sortable="false" Width="140px">
+                <Template Context="t">
+                    <RadzenButton Size="ButtonSize.Small" Text="View" Click="@(() => View(t))" Style="margin-right:6px" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => Delete(t))" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</div>
+
+@code {
+    private readonly ITransactionService _transactionService;
+    public TransactionsDataTableComponent(ITransactionService transactionService) => _transactionService = transactionService;
+
+    int count;
+    bool isLoading;
+    IEnumerable<TransactionModel> _all = Array.Empty<TransactionModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        isLoading = true;
+
+        // 1) Load everything (your current service)
+        var result = await _transactionService.GetAllAsync();
+        if (!result.IsSuccess || result.Object is null)
+        {
+            _notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Failed to load transactions: " + result.ErrorMessage,
+                Duration = 4000
+            });
+            isLoading = false;
+            return;
+        }
+
+        _all = result.Object;
+
+        isLoading = false;
+    }
+
+    void View(TransactionModel t)
+    {
+        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "View", Detail = $"{t.Id}" });
+    }
+
+    async Task Delete(TransactionModel t)
+    {
+        // call your service; then reload grid (DataGrid has Reload() if you give it @ref)
+        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Deleted", Detail = $"{t.Id}" });
+    }
+}
