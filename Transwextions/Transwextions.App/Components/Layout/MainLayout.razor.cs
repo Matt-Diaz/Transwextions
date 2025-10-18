@@ -8,10 +8,12 @@ namespace Transwextions.App.Components.Layout;
 public partial class MainLayout : IDisposable
 {
     protected readonly IUserStateService _userStateService;
+    protected readonly ITransactionService _transactionService;
 
-    public MainLayout(IUserStateService userStateService)
+    public MainLayout(IUserStateService userStateService, ITransactionService transactionService)
     {
         _userStateService = userStateService;
+        _transactionService = transactionService;
         _userStateService.OnChange += OnUserStateChanged;
     }
 
@@ -64,11 +66,26 @@ public partial class MainLayout : IDisposable
 
     private async void PayNowButton_OnClick()
     {
-        var result = await _dialogService.OpenAsync<PayNowComponent>("Make a Payment", 
+        PayNowModel result = await _dialogService.OpenAsync<PayNowComponent>("Make a Payment", 
             options: new DialogOptions() 
             { 
                ShowTitle = false
             });
+
+        if (result != null)
+        {
+            ulong cents = (ulong)Math.Round(result.Amount * 100m, MidpointRounding.AwayFromZero);
+
+            var newModel = new TransactionModel
+            {
+                AmountTotalCents = cents,
+                Description = result.Description
+            };
+
+            var addResult = await _transactionService.AddAsync(newModel);
+
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private void OnUserStateChanged()
