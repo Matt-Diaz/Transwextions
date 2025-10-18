@@ -8,10 +8,12 @@ namespace Transwextions.App.Services;
 public class TransactionsService : ITransactionService
 {
     protected readonly TranswextionsContext _context;
+    protected readonly IApplicationEventsService _applicationEventsService;
 
-    public TransactionsService(TranswextionsContext context)
+    public TransactionsService(TranswextionsContext context, IApplicationEventsService applicationEventsService)
     {
         _context = context;
+        _applicationEventsService = applicationEventsService;
     }
 
     public async Task<ServiceResult<List<TransactionModel>>> GetAllAsync()
@@ -49,7 +51,18 @@ public class TransactionsService : ITransactionService
             await _context.Transactions.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            return ServiceResult<object>.Success(new());
+            var addedModel = await GetByGuidAsync(model.UniqueIdentifier);
+
+            if (addedModel != null && addedModel.IsSuccess && addedModel.Object != null)
+            {
+                _applicationEventsService.NotifyTransactionAdded(addedModel.Object);
+
+                return ServiceResult<object>.Success(new());
+            }
+            else
+            {
+                return ServiceResult<object>.Failure("An error occurred while adding transaction.");
+            }
         }
         catch (Exception ex)
         {
@@ -66,6 +79,13 @@ public class TransactionsService : ITransactionService
 
         _context.Transactions.Remove(modelResult.Object);
         await _context.SaveChangesAsync();
+
+        var deletedModel = await GetByGuidAsync(transactionGuid);
+
+        if(deletedModel == null || deletedModel.IsSuccess == false || deletedModel.Object == null)
+        {
+            _applicationEventsService.NotifyTransactionDeleted(modelResult.Object);
+        }
 
         return ServiceResult<object>.Success(new());
     }

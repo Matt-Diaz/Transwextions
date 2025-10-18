@@ -1,7 +1,6 @@
 ﻿@using System.Globalization
 @using Transwextions.App.Services.Interfaces
 @using Transwextions.Data.Models
-@inject NotificationService _notificationService
 
 <div class="component">
     <RadzenDataGrid TItem="TransactionModel"
@@ -14,11 +13,6 @@
                     EmptyText="No transactions yet.">
 
         <Columns>
-            <RadzenDataGridColumn TItem="TransactionModel" Property="Guid" Title="Id" Width="200px">
-                <Template Context="context">
-                    @(context.UniqueIdentifier.ToString())
-                </Template>
-            </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="TransactionModel" Property="Description" Title="Details" />
             <RadzenDataGridColumn TItem="TransactionModel" Property="TransactionDate" Title="Transaction Date" Filterable="false">
                 <Template Context="context">@context.TransactionDateUtc.ToString("yyyy-MM-dd")</Template>
@@ -41,47 +35,5 @@
 </div>
 
 @code {
-    private readonly ITransactionService _transactionService;
-    public TransactionsDataTableComponent(ITransactionService transactionService) => _transactionService = transactionService;
-
-    private bool IsLoading;
-    IEnumerable<TransactionModel> TransactionsData = Array.Empty<TransactionModel>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
-
-    async Task LoadData()
-    {
-        IsLoading = true;
-
-        var result = await _transactionService.GetAllAsync();
-        if (!result.IsSuccess || result.Object is null)
-        {
-            _notificationService.Notify(new NotificationMessage
-            {
-                Severity = NotificationSeverity.Error,
-                Summary = "Error",
-                Detail = "Failed to load transactions:" + result.ErrorMessage,
-                Duration = 4000
-            });
-            IsLoading = false;
-            return;
-        }
-
-        TransactionsData = result.Object;
-
-        IsLoading = false;
-    }
-
-    void View(TransactionModel t)
-    {
-        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "View", Detail = $"{t.Id}" });
-    }
-
-    async Task Delete(TransactionModel t)
-    {
-        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Deleted", Detail = $"{t.Id}" });
-    }
+    
 }
