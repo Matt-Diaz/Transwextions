@@ -17,6 +17,7 @@ builder.Services.AddRadzenComponents();
 
 builder.Services.AddSingleton<IUserStateService, UserStateService>();
 builder.Services.AddScoped<ITransactionService, TransactionsService>();
+builder.Services.AddScoped<IApplicationEventsService, ApplicationEventsService>();
 
 var app = builder.Build();
 
