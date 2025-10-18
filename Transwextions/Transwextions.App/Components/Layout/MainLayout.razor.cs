@@ -9,12 +9,17 @@ public partial class MainLayout : IDisposable
 {
     protected readonly IUserStateService _userStateService;
     protected readonly ITransactionService _transactionService;
+    protected readonly IApplicationEventsService _applicationEventsService;
 
-    public MainLayout(IUserStateService userStateService, ITransactionService transactionService)
+    public MainLayout(IUserStateService userStateService, ITransactionService transactionService, IApplicationEventsService applicationEventsService)
     {
         _userStateService = userStateService;
         _transactionService = transactionService;
+        _applicationEventsService = applicationEventsService;
+
         _userStateService.OnChange += OnUserStateChanged;
+        _applicationEventsService.TransactionAdded += OnTransactionAdded;
+        _applicationEventsService.TransactionDeleted += OnTransactionDeleted;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -23,6 +28,8 @@ public partial class MainLayout : IDisposable
         {
             Username = _userStateService.Username;
             IsLoggedIn = _userStateService.IsLoggedIn;
+            TransactionsTotalCents = await GetTransactionsTotalCents();
+
             await ShowGetUsernameModal();
             await InvokeAsync(StateHasChanged);
         }
@@ -30,6 +37,19 @@ public partial class MainLayout : IDisposable
     private bool IsLoggedIn { get; set; } = false;
     private string Username { get; set; } = string.Empty;
     private bool SidebarExpanded = true;
+    private ulong TransactionsTotalCents { get; set; } = 0;
+
+    private async Task<ulong> GetTransactionsTotalCents()
+    {
+        var result = await _transactionService.GetTransactionsTotalCents();
+
+        if (result.IsSuccess && result.Object != null)
+        {
+            return result.Object.Value;
+        }
+
+        return 0;
+    }   
 
     private string GetWelcomeText()
     {
@@ -41,6 +61,12 @@ public partial class MainLayout : IDisposable
         }
 
         return result;
+    }
+
+    private string GetTransactionsTotalText()
+    {
+        decimal total = TransactionsTotalCents / 100m;
+        return total.ToString("C2");
     }
 
     private async Task ShowGetUsernameModal()
@@ -88,6 +114,18 @@ public partial class MainLayout : IDisposable
         }
     }
 
+    private async void OnTransactionAdded(TransactionModel model)
+    {
+        TransactionsTotalCents = TransactionsTotalCents + model.AmountTotalCents;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void OnTransactionDeleted(TransactionModel model)
+    {
+        TransactionsTotalCents = TransactionsTotalCents + model.AmountTotalCents;
+        await InvokeAsync(StateHasChanged);
+    }
+
     private void OnUserStateChanged()
     {
         Username = _userStateService.Username;
@@ -98,5 +136,7 @@ public partial class MainLayout : IDisposable
     public void Dispose()
     {
         _userStateService.OnChange -= OnUserStateChanged;
+        _applicationEventsService.TransactionAdded -= OnTransactionAdded;
+        _applicationEventsService.TransactionDeleted -= OnTransactionDeleted;
     }
 }
