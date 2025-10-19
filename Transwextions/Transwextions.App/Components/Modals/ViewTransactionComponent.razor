@@ -46,21 +46,21 @@
                 }
             </RadzenCard>
 
-            <RadzenRow>
-                <RadzenColumn>
+            <RadzenRow class="rz-mb-2">
+                <RadzenColumn Size="6" Style="text-align: right;">
                     <RadzenText class="rz-mr-2" Text="Convert to Currency: " />
                 </RadzenColumn>
-                <RadzenColumn>
-                    <RadzenDropDown Data="CurrenciesData" TValue="string" Value="SelectedCurrency" ValueChanged="@((arg) => CurrencyDropdown_OnChange(arg))" />
+                <RadzenColumn Size="6">
+                    <RadzenDropDown class="rz-w-100" Data="CurrenciesData" TValue="string" Value="SelectedCurrency" ValueChanged="@((arg) => CurrencyDropdown_OnChange(arg))" />
                 </RadzenColumn>
             </RadzenRow>
 
             <RadzenRow>
-                <RadzenColumn>
-                    <RadzenText class="rz-mr-2" Text="Override Txn Date: " />
+                <RadzenColumn Size="6" Style="text-align: right;">
+                    <RadzenText class="rz-mr-2 rz-w-100" Text="Override Txn Date: " />
                 </RadzenColumn>
-                <RadzenColumn>
-                    <RadzenDatePicker Value="TransactionDateOverride" TValue="DateTime" ValueChanged="@((args) => TransactionDateOverride_OnChange(args))" />
+                <RadzenColumn Size="6">
+                    <RadzenDatePicker class="rz-w-100" Value="TransactionDateOverride" TValue="DateTime" ValueChanged="@((args) => TransactionDateOverride_OnChange(args))" />
                 </RadzenColumn>
             </RadzenRow>
         }
