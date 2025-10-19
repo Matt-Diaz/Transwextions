@@ -12,6 +12,7 @@ public partial class UsernameInputComponent
     public UsernameInputComponent()
     {
         AvatarImageNamesData = GetAvatarImageNamesData();
+        Model.AvatarImagePath = AvatarImageNamesData[0];
     }
 
     private List<string> GetAvatarImageNamesData()
