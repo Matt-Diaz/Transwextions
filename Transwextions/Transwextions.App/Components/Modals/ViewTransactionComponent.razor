@@ -23,7 +23,7 @@
                 <RadzenRow RowGap="0" class="rz-mb-3">
                     <RadzenColumn>
                         <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Amount</RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@((Transaction.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))</b></RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@(Helpers.ConvertCentsToCurrencyString(Transaction.AmountTotalCents))</b></RadzenText>
                     </RadzenColumn>
                     <RadzenColumn>
                         <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Description</RadzenText>
