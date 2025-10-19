@@ -101,7 +101,7 @@ public partial class ViewTransactionComponent
 
         if (ExchangeRatesData != null && Transaction != null)
         {
-            var exchange = ExchangeRatesData.FirstOrDefault(p => p.Currency == SelectedCurrency);
+            var exchange = ExchangeRatesData.FirstOrDefault(p => p.CountryCurrency == SelectedCurrency);
 
             if (exchange != null)
             {

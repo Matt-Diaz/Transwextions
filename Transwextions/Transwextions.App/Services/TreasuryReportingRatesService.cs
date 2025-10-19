@@ -118,7 +118,7 @@ public class TreasuryReportingRatesService
                 {
                     var exchangeRate = new ExchangeRateModel()
                     {
-                        Currency = row.Currency,
+                        CountryCurrency = row.Currency,
                         ExchangeRate = row.ExchangeRate,
                         RecordDate = row.RecordDate
                     };
@@ -134,7 +134,7 @@ public class TreasuryReportingRatesService
                     : baseUrl + nextLink;
             }
 
-            var result = exchangeRates.OrderBy(x => x.Currency).ToList();
+            var result = exchangeRates.OrderBy(x => x.CountryCurrency).ToList();
 
             return result.Count == 0
                 ? ServiceResult<List<ExchangeRateModel>>.Failure("No exchange rate data returned.")

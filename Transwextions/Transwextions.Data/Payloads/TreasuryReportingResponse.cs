@@ -36,7 +36,7 @@ public class TreasuryReportingResponse
         [JsonPropertyName("record_date")] 
         public DateOnly RecordDate { get; init; }
 
-        [JsonPropertyName("currency")] 
+        [JsonPropertyName("country_currency_desc")] 
         public string Currency { get; init; } = "";
 
         // Exchange rate is returned as a string in the API response. (Convert to decimal)
