@@ -4,3 +4,9 @@
     font-weight: normal;
     font-style: normal;
 }
+
+.rz-body {
+    height: 100%;
+    width: 100%;
+    overflow:hidden;
+}
