@@ -7,4 +7,7 @@ public partial class ViewTransactionComponent
 {
     [Parameter]
     public TransactionModel? Transaction { get; set; }
+
+    [Parameter]
+    public List<string> CurrenciesData { get; set; } = new();
 }

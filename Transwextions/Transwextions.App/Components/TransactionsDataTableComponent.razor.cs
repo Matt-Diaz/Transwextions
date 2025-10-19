@@ -1,4 +1,5 @@
-﻿using Radzen;
+﻿using Microsoft.AspNetCore.Components;
+using Radzen;
 using Transwextions.App.Components.Modals;
 using Transwextions.App.Services;
 using Transwextions.App.Services.Interfaces;
@@ -10,6 +11,9 @@ public partial class TransactionsDataTableComponent : IDisposable
 {
     private readonly ITransactionService _transactionService;
     private readonly IApplicationEventsService _applicationEventsService;
+
+    [Parameter]
+    public List<string> CurrenciesData { get; set; } = new();
 
     public TransactionsDataTableComponent(ITransactionService transactionService, IApplicationEventsService applicationEventsService)
     {
@@ -69,7 +73,8 @@ public partial class TransactionsDataTableComponent : IDisposable
         var result = await _dialogService.OpenAsync<ViewTransactionComponent>("View Transaction",
         parameters: new Dictionary<string, object?>
         {
-            { "Transaction", model }
+            { "Transaction", model },
+            { "CurrenciesData", CurrenciesData }
         },
         options: new DialogOptions()
         {
