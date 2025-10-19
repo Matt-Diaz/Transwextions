@@ -26,12 +26,14 @@ public partial class ViewTransactionComponent
     public decimal? ExchangeRate { get; set; }
     public DateOnly ExchangeRecordDate { get; set; }
     public List<ExchangeRateModel>? ExchangeRatesData { get; set; }
+    public DateTime TransactionDateOverride { get; set; }
     public bool IsLoadingConversionData { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            TransactionDateOverride = Transaction?.TransactionDateUtc ?? DateTime.UtcNow;
             ExchangeRatesData = await LoadExchangeRatesData();
         }
     }
@@ -47,9 +49,9 @@ public partial class ViewTransactionComponent
             IsLoadingConversionData = false;
             return null;
         }
-
-        var minDate = Transaction.TransactionDateUtc.AddMonths(-6);
-        var maxDate = Transaction.TransactionDateUtc;
+        var transactionDate = TransactionDateOverride.Date;
+        var minDate = transactionDate.AddMonths(-6);
+        var maxDate = transactionDate;
         var exchangeRatesResult = await _treasuryReportingRatesService.GetExchangeRatesByDateRangeAsync(minDate, maxDate);
 
         if (exchangeRatesResult.IsSuccess == false)
@@ -73,9 +75,22 @@ public partial class ViewTransactionComponent
         return exchangeRatesResult.Object.OrderBy(p => p.RecordDate).ToList();
     }
 
+    private async void TransactionDateOverride_OnChange(DateTime value)
+    {
+        TransactionDateOverride = value;
+        ExchangeRatesData = await LoadExchangeRatesData();
+        await ApplyCurrencyConversion(SelectedCurrency);
+        await InvokeAsync(StateHasChanged);
+    }
+
     public async void CurrencyDropdown_OnChange(string value)
     {
-        SelectedCurrency = value;
+        await ApplyCurrencyConversion(value);
+    }
+
+    public async Task ApplyCurrencyConversion(string currency)
+    {
+        SelectedCurrency = currency;
 
         if (SelectedCurrency == "U.S. Dollar")
         {
@@ -97,9 +112,9 @@ public partial class ViewTransactionComponent
             {
                 ExchangeRate = null;
                 _notificationService.Notify(
-                    Radzen.NotificationSeverity.Error, 
-                    "No conversion rate within 6 months exists for this currency.", 
-                    string.Empty, 
+                    Radzen.NotificationSeverity.Error,
+                    "No conversion rate within 6 months exists for this currency.",
+                    string.Empty,
                     TimeSpan.FromSeconds(5));
             }
         }
