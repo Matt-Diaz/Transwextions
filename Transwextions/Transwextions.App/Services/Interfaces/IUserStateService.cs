@@ -4,5 +4,6 @@ public interface IUserStateService
 {
     public event Action? OnChange;
     public string Username { get; set; }
+    public string AvatarImagePath { get; set; }
     public bool IsLoggedIn { get; set; }
 }

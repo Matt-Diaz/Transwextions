@@ -26,6 +26,7 @@ public partial class MainLayout : IDisposable
     private bool IsLoggedIn { get; set; } = false;
     private bool SidebarExpanded = true;
     private string Username { get; set; } = string.Empty;
+    private string AvatarImagePath { get; set; } = "./images/avatar-placeholder.png";
     private ulong TransactionsTotalCents { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,6 +36,7 @@ public partial class MainLayout : IDisposable
             Username = _userStateService.Username;
             IsLoggedIn = _userStateService.IsLoggedIn;
             TransactionsTotalCents = await GetTransactionsTotalCents();
+            AvatarImagePath = _userStateService.AvatarImagePath;
 
             await ShowGetUsernameModal();
             await InvokeAsync(StateHasChanged);
@@ -86,6 +88,8 @@ public partial class MainLayout : IDisposable
         {
             IsLoggedIn = true;
             Username = result.Username;
+            AvatarImagePath = result.AvatarImagePath;
+            _userStateService.AvatarImagePath = result.AvatarImagePath;
             _userStateService.Username = result.Username;
             _userStateService.IsLoggedIn = true;
             await InvokeAsync(StateHasChanged);
