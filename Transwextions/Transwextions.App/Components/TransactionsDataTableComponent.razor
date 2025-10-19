@@ -19,7 +19,7 @@
 
             <RadzenDataGridColumn TItem="TransactionModel" Title="Amount (USD)" Sortable="false" Filterable="false" TextAlign="TextAlign.Right">
                 <Template Context="context">
-                    @((context.AmountTotalCents / 100m).ToString("C", CultureInfo.GetCultureInfo("en-US")))
+                    @(Helpers.ConvertCentsToCurrencyString(context.AmountTotalCents))
                 </Template>
             </RadzenDataGridColumn>
 

@@ -69,8 +69,9 @@ public partial class MainLayout : IDisposable
 
     private string GetTransactionsTotalText()
     {
-        decimal total = TransactionsTotalCents / 100m;
-        return total.ToString("C2");
+        var totalText = Helpers.ConvertCentsToCurrencyString(TransactionsTotalCents);
+
+        return totalText;
     }
 
     private async Task ShowGetUsernameModal()
@@ -106,7 +107,7 @@ public partial class MainLayout : IDisposable
 
         if (result != null)
         {
-            ulong cents = (ulong)Math.Round(result.Amount * 100m, MidpointRounding.AwayFromZero);
+            ulong cents = Helpers.ConvertDecimalToCents(result.Amount);
 
             var newModel = new TransactionModel
             {

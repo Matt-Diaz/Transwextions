@@ -124,12 +124,11 @@ public partial class ViewTransactionComponent
     {
         if (Transaction != null && ExchangeRate != null)
         {
-            decimal usd = (ExchangeRate.Value * Transaction.AmountTotalCents) / 100m;
-            usd = Math.Round(usd, 2, MidpointRounding.AwayFromZero);
+            decimal usd = Helpers.ConverTotalCentsToDeciamlUsingExchangeRate(Transaction.AmountTotalCents, ExchangeRate.Value);
 
-            return usd.ToString("C2", CultureInfo.GetCultureInfo("en-US"));
+            return Helpers.ConvertDecimalToCurrencyString(usd);
         }
 
-        return 0m.ToString("C2", CultureInfo.GetCultureInfo("en-US"));
+        return "$0.00";
     }
 }
