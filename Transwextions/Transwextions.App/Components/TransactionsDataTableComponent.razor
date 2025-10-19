@@ -2,15 +2,15 @@
 @using Transwextions.App.Services.Interfaces
 @using Transwextions.Data.Models
 
-<div class="component">
+<div class="component rz-h-100 rz-overflow-hidden">
     <RadzenDataGrid TItem="TransactionModel"
                     Data="@TransactionsData"
                     AllowPaging="false"
                     AllowSorting="true"
                     Responsive="false"
                     IsLoading="@IsLoading"
-                    EmptyText="No transactions yet.">
-
+                    EmptyText="No transactions yet."
+                    class="rz-h-100 rz-overflow-hidden">
         <Columns>
             <RadzenDataGridColumn TItem="TransactionModel" Property="Description" Title="Details" />
             <RadzenDataGridColumn TItem="TransactionModel" Property="TransactionDate" Title="Transaction Date" Filterable="false">
@@ -23,7 +23,7 @@
                 </Template>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="TransactionModel" Title="Actions" Filterable="false" Sortable="false" Width="140px">
+            <RadzenDataGridColumn TItem="TransactionModel" Filterable="false" Sortable="false" Width="140px">
                 <Template Context="context">
                     <RadzenButton Size="ButtonSize.Small" Text="View" Click="@(() => View(context))" Style="margin-right:6px" />
                     <RadzenButton Size="ButtonSize.Small" Text="Delete" ButtonStyle="ButtonStyle.Danger" Click="@(() => Delete(context))" />
