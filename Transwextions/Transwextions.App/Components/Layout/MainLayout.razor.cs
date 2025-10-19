@@ -1,5 +1,6 @@
 ﻿using Radzen;
 using Transwextions.App.Components.Modals;
+using Transwextions.App.Services;
 using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Models;
 
@@ -10,17 +11,24 @@ public partial class MainLayout : IDisposable
     protected readonly IUserStateService _userStateService;
     protected readonly ITransactionService _transactionService;
     protected readonly IApplicationEventsService _applicationEventsService;
+    protected readonly TreasuryReportingRatesService _treasuryReportingRatesService;
 
-    public MainLayout(IUserStateService userStateService, ITransactionService transactionService, IApplicationEventsService applicationEventsService)
+    public MainLayout(IUserStateService userStateService, ITransactionService transactionService, IApplicationEventsService applicationEventsService, TreasuryReportingRatesService treasuryReportingRatesService)
     {
         _userStateService = userStateService;
         _transactionService = transactionService;
         _applicationEventsService = applicationEventsService;
+        _treasuryReportingRatesService = treasuryReportingRatesService;
 
         _userStateService.OnChange += OnUserStateChanged;
         _applicationEventsService.TransactionAdded += OnTransactionAdded;
         _applicationEventsService.TransactionDeleted += OnTransactionDeleted;
     }
+    private bool IsLoggedIn { get; set; } = false;
+    private bool SidebarExpanded = true;
+    private string Username { get; set; } = string.Empty;
+    private ulong TransactionsTotalCents { get; set; } = 0;
+    private List<string> CurrenciesData { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -32,13 +40,21 @@ public partial class MainLayout : IDisposable
 
             await ShowGetUsernameModal();
             await InvokeAsync(StateHasChanged);
+
+            var result = await _treasuryReportingRatesService.GetCurrenciesAsync();
+            if (result.IsSuccess && result.Object != null)
+            {
+                Console.WriteLine();
+            }
+
+            var result2 = await _treasuryReportingRatesService.GetExchangeRatesByDateRangeAsync(DateTime.Now.AddMonths(-6), DateTime.Now);
+            if (result2.IsSuccess && result2.Object != null)
+            {
+                Console.WriteLine();
+            }
         }
     }
-    private bool IsLoggedIn { get; set; } = false;
-    private string Username { get; set; } = string.Empty;
-    private bool SidebarExpanded = true;
-    private ulong TransactionsTotalCents { get; set; } = 0;
-
+  
     private async Task<ulong> GetTransactionsTotalCents()
     {
         var result = await _transactionService.GetTransactionsTotalCents();
@@ -67,6 +83,25 @@ public partial class MainLayout : IDisposable
     {
         decimal total = TransactionsTotalCents / 100m;
         return total.ToString("C2");
+    }
+
+    private async void LoadCurrenciesData()
+    {
+        var currencyResult = await _treasuryReportingRatesService.GetCurrenciesAsync();
+
+        if(currencyResult == null)
+        {
+            _notificationService.Notify(NotificationSeverity.Error, "There was an error loading currencies.");
+            return;
+        }
+
+        if (currencyResult!.IsSuccess == false)
+        {
+            _notificationService.Notify(NotificationSeverity.Error, currencyResult.ErrorMessage);
+            return;
+        }
+
+        CurrenciesData = currencyResult.Object ?? new();
     }
 
     private async Task ShowGetUsernameModal()
