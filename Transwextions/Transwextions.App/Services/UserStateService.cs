@@ -16,6 +16,18 @@ public class UserStateService : IUserStateService
         }
     }
 
+    private string? avatarImagePath;
+
+    public string AvatarImagePath
+    {
+        get => avatarImagePath ?? string.Empty;
+        set
+        {
+            avatarImagePath = value;
+            NotifyStateChanged();
+        }
+    }
+
     private bool? isLoggedIn;
 
     public bool IsLoggedIn

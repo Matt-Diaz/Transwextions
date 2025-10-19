@@ -11,7 +11,7 @@
             <div class="mobile-header-container">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" class="mobile-header-stack">
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
-                        <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
+                        <RadzenImage Path="@AvatarImagePath" Style="width:64px;" />
                         <RadzenText class="welcome-text" Text="@GetWelcomeText()" />
                     </RadzenStack>
                     <RadzenText Text="@GetTransactionsTotalText()" class="total-transactions-amount" />
@@ -27,7 +27,7 @@
                 </div>
                 <div class="profile-info-container">
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
-                        <RadzenImage Path="./images/avatar-placeholder.png" Style="width:64px;" />
+                        <RadzenImage Path="@AvatarImagePath" Style="width:64px;" />
                         <RadzenText class="welcome-text" Text="@GetWelcomeText()" />
                     </RadzenStack>
                 </div>
