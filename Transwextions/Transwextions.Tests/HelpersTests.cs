@@ -26,6 +26,7 @@ public class HelpersTests
     [Test]
     public void ConvertCentsToDecimal_Success_ExpectedValues()
     {
+        // Arrange
         ulong centsSmall = 199;
         ulong centsExact = 12345;
         ulong centsZero = 0;
@@ -95,7 +96,6 @@ public class HelpersTests
         // Arrange
         ulong totalCentsA = 10_000;
         decimal rateA = 1.2345m;
-
         ulong totalCentsB = 199;
         decimal rateB = 0.5m;
 

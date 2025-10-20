@@ -15,8 +15,8 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetCurrenciesAsync_Success_MultiplePages()
     {
-        // page 1
-        var p1 = new TreasuryReportingResponse
+        // Arrange
+        var response1 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -32,8 +32,7 @@ public class TreasuryReportingRatesServiceTests
             Links = new() { Next = "&page%5Bnumber%5D=2" }
         };
 
-        // page 2 (duplicate currency)
-        var p2 = new TreasuryReportingResponse
+        var response2 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -47,24 +46,25 @@ public class TreasuryReportingRatesServiceTests
             Links = new() { Next = null }
         };
 
+        // Mock
         var baseUrl = TreasuryReportingRatesAPIEndpoints.GetAllCurrenciesEndpoint;
-
         var mock = new MockHttpMessageHandler();
 
-        // Expect Page 1
+        // Response 1
         mock.Expect($"{baseUrl}")
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
-        // Expect Page 2
+        // Response 2
         mock.When($"{baseUrl}")
             .With(req => req.RequestUri!.Query.Contains("page%5Bnumber%5D=2") == true)
-            .Respond("application/json", Serialize(p2));
+            .Respond("application/json", Serialize(response2));
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetCurrenciesAsync();
 
+        // Assert
         result.IsSuccess.Should().BeTrue();
         result.Object.Should().HaveCount(2);
         result.Object.Should().Equal("Dollar", "Peso");
@@ -73,25 +73,28 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetCurrenciesAsync_Failure_NoCurrencies()
     {
-        // page 1
-        var p1 = new TreasuryReportingResponse
+        // Arrange
+        var response1 = new TreasuryReportingResponse
         {
             Data = null,
             Links = new() { Next = "&page%5Bnumber%5D=2" }
         };
 
+        // Mock
         var baseUrl = TreasuryReportingRatesAPIEndpoints.GetAllCurrenciesEndpoint;
-
         var mock = new MockHttpMessageHandler();
 
-        // Expect Page 1
+        // Repsonse 1
         mock.Expect($"{baseUrl}")
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
+
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
         var result = await svc.GetCurrenciesAsync();
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.Object.Should().BeNull();
         result.ErrorMessage.Should().Contain("response contained no data");
@@ -100,10 +103,9 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetCurrenciesAsync_Failure_CouldNotDeserialize()
     {
+        // Mock
         var baseUrl = TreasuryReportingRatesAPIEndpoints.GetAllCurrenciesEndpoint;
-
         var mock = new MockHttpMessageHandler();
-
         var badJson = "{ this is : not valid json ";
 
         // First response with bad JSON
@@ -111,10 +113,12 @@ public class TreasuryReportingRatesServiceTests
             .With(req => req.RequestUri!.Query.Contains("page%5Bnumber%5D") == false)
             .Respond("application/json", badJson);
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
         var result = await svc.GetCurrenciesAsync();
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.Object.Should().BeNull();
         result.ErrorMessage.Should().Contain("Failed to deserialize Treasury response");
@@ -123,15 +127,17 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetCurrenciesAsync_Failure_CancelRequest()
     {
+        // Mock
         var mock = new MockHttpMessageHandler();
-        var http = new HttpClient(mock);
-        var svc = new TreasuryReportingRatesService(http);
-
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
+        // Act
+        var http = new HttpClient(mock);
+        var svc = new TreasuryReportingRatesService(http);
         var result = await svc.GetCurrenciesAsync(cts.Token);
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Operation canceled");
     }
@@ -139,8 +145,8 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetCurrenciesAsync_Failure_PageLoopLimit()
     {
-        // page 1
-        var p1 = new TreasuryReportingResponse
+        // Arrange
+        var response1 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -158,22 +164,24 @@ public class TreasuryReportingRatesServiceTests
 
         var baseUrl = TreasuryReportingRatesAPIEndpoints.GetAllCurrenciesEndpoint;
 
+        // Mock
         var mock = new MockHttpMessageHandler();
 
-        // Page 1
+        // Response 1
         mock.Expect($"{baseUrl}")
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
-        // Page 2
+        // Response 2
         mock.When($"{baseUrl}")
             .With(req => req.RequestUri!.Query.Contains("page%5Bnumber%5D=1") == true)
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetCurrenciesAsync();
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.Object.Should().BeNull();
         result.ErrorMessage.Should().Contain("Exceeded maximum page loop limit");
@@ -182,8 +190,8 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetExchangeRatesByDateRangeAsync_Success_MultiplePages()
     {
-        // page 1
-        var p1 = new TreasuryReportingResponse
+        // Arrange
+        var response1 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -203,8 +211,7 @@ public class TreasuryReportingRatesServiceTests
             Links = new() { Next = "&page%5Bnumber%5D=2" }
         };
 
-        // page 2
-        var p2 = new TreasuryReportingResponse
+        var response2 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -226,22 +233,25 @@ public class TreasuryReportingRatesServiceTests
             minDate.Date.ToString("yyyy-MM-dd"),
             maxDate.Date.ToString("yyyy-MM-dd"));
 
+        // Mock
         var mock = new MockHttpMessageHandler();
 
-        // Expect Page 1
+        // Response 1
         mock.Expect($"{baseUrl}")
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
-        // Expect Page 2
+        // Response 2
         mock.When($"{baseUrl}")
             .With(req => req.RequestUri!.Query.Contains("page%5Bnumber%5D=2") == true)
-            .Respond("application/json", Serialize(p2));
+            .Respond("application/json", Serialize(response2));
 
+
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetExchangeRatesByDateRangeAsync(minDate, maxDate);
 
+        // Assert
         result.IsSuccess.Should().BeTrue();
         result.Object.Should().HaveCount(3);
     }
@@ -249,6 +259,7 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetExchangeRatesByDateRangeAsync_Failure_MinDateCannotBeGreaterThanMaxDate()
     {
+        // Arrange
         var maxDate = new DateTime(2025, 10, 01);
 
         // Min Date is greater than Max Date.
@@ -259,17 +270,19 @@ public class TreasuryReportingRatesServiceTests
             minDate.Date.ToString("yyyy-MM-dd"),
             maxDate.Date.ToString("yyyy-MM-dd"));
 
+        // Mock
         var mock = new MockHttpMessageHandler();
 
-        // Expect Page 1
+        // Response
         mock.Expect($"{baseUrl}")
             .Respond("application/json", string.Empty);
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetExchangeRatesByDateRangeAsync(minDate, maxDate);
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.ErrorMessage.Should().Contain("MinDate cannot be greater than MaxDate");
     }
@@ -277,8 +290,8 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetExchangeRatesByDateRangeAsync_Failure_PageLoopLimitExceeded()
     {
-        // page 1
-        var p1 = new TreasuryReportingResponse
+        // Arrange
+        var response1 = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -298,8 +311,7 @@ public class TreasuryReportingRatesServiceTests
             Links = new() { Next = "&page%5Bnumber%5D=2" }
         };
 
-        // page 2
-        var p2 = new TreasuryReportingResponse
+        var responseLoop = new TreasuryReportingResponse
         {
             Data = new()
             {
@@ -321,22 +333,24 @@ public class TreasuryReportingRatesServiceTests
             minDate.Date.ToString("yyyy-MM-dd"),
             maxDate.Date.ToString("yyyy-MM-dd"));
 
+        // Mock
         var mock = new MockHttpMessageHandler();
 
-        // Expect Page 1
+        // Response 1
         mock.Expect($"{baseUrl}")
-            .Respond("application/json", Serialize(p1));
+            .Respond("application/json", Serialize(response1));
 
-        // Expect Page 2
+        // Response Loop
         mock.When($"{baseUrl}")
             .With(req => req.RequestUri!.Query.Contains("page%5Bnumber%5D=2") == true)
-            .Respond("application/json", Serialize(p2));
+            .Respond("application/json", Serialize(responseLoop));
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetExchangeRatesByDateRangeAsync(minDate, maxDate);
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Exceeded maximum page loop limit");
     }
@@ -344,6 +358,7 @@ public class TreasuryReportingRatesServiceTests
     [Test]
     public async Task GetExchangeRatesByDateRangeAsync_Failure_CouldNotDeserialize()
     {
+        // Arrange
         var minDate = new DateTime(2025, 04, 01);
         var maxDate = new DateTime(2025, 10, 01);
 
@@ -352,18 +367,20 @@ public class TreasuryReportingRatesServiceTests
             minDate.Date.ToString("yyyy-MM-dd"),
             maxDate.Date.ToString("yyyy-MM-dd"));
 
+        // Mock
         var mock = new MockHttpMessageHandler();
         var badJson = "{ this is : not valid json ";
 
-        // Expect Bad Json.
+        // Mock Bad Json
         mock.Expect($"{baseUrl}")
             .Respond("application/json", badJson);
 
+        // Act
         var http = new HttpClient(mock);
         var svc = new TreasuryReportingRatesService(http);
-
         var result = await svc.GetExchangeRatesByDateRangeAsync(minDate, maxDate);
 
+        // Assert
         result.IsSuccess.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Failed to deserialize Treasury response");
     }

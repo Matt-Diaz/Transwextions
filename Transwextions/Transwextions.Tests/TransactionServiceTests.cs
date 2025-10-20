@@ -16,9 +16,14 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
-            var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
+            // Arrange
             var uid1 = Guid.Parse("00000001-4496-4B99-A0C3-111F9AB55149");
+
+            // Mock
+            var events = new FakeApplicationEventsService();
+
+            // Act
+            var svc = new TransactionsService(db, events);
 
             await svc.AddAsync(new TransactionModel
             {
@@ -36,6 +41,7 @@ public class TransactionServiceTests
                 AmountTotalCents = 1000
             });
 
+            // Assert
             serviceResult.IsSuccess.Should().BeFalse();
             serviceResult.ErrorMessage.Should().Contain("UniqueIdentifier already exists");
             events.Added.Should().ContainSingle();
@@ -49,16 +55,22 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
+            // Arrange
+            var tooLong = new string('x', 51);
+
+            // Mock
             var events = new FakeApplicationEventsService();
+
+            // Act
             var svc = new TransactionsService(db, events);
 
-            var tooLong = new string('x', 51);
-            var serviceResult = await svc.AddAsync(new TransactionModel 
-            { 
-                Description = tooLong, 
-                AmountTotalCents = 100 
+            var serviceResult = await svc.AddAsync(new TransactionModel
+            {
+                Description = tooLong,
+                AmountTotalCents = 100
             });
 
+            // Assert
             serviceResult.IsSuccess.Should().BeFalse();
             serviceResult.ErrorMessage.Should().Contain("character limit is 50");
             events.Added.Should().BeEmpty();
@@ -72,15 +84,18 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
+            // Mock
             var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
 
+            // Act
+            var svc = new TransactionsService(db, events);
             var serviceResult = await svc.AddAsync(new TransactionModel
             {
                 Description = null,
                 AmountTotalCents = 100,
             });
 
+            // Assert
             serviceResult.IsSuccess.Should().BeFalse();
             serviceResult.ErrorMessage.Should().Contain("description is null");
             events.Added.Should().BeEmpty();
@@ -94,11 +109,14 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
+            // Mock
             var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
 
+            // Act
+            var svc = new TransactionsService(db, events);
             var serviceResult = await svc.AddAsync(null);
 
+            // Assert
             serviceResult.IsSuccess.Should().BeFalse();
             serviceResult.ErrorMessage.Should().Contain("Model is null");
             events.Added.Should().BeEmpty();
@@ -112,10 +130,15 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
-            var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
+            // Arrange
             var description = "Valid Description";
             ulong amountTotalCents = 1000;
+
+            // Mock
+            var events = new FakeApplicationEventsService();
+
+            // Act
+            var svc = new TransactionsService(db, events);
 
             var serviceResult = await svc.AddAsync(new TransactionModel
             {
@@ -123,10 +146,10 @@ public class TransactionServiceTests
                 AmountTotalCents = amountTotalCents
             });
 
+            // Assert
             serviceResult.IsSuccess.Should().BeTrue();
             serviceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
             events.Added.Should().ContainSingle();
-
             events.Added.First().Description.Should().Be(description);
             events.Added.First().AmountTotalCents.Should().Be(amountTotalCents);
         }
@@ -139,6 +162,10 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
+            // Arrange
+            ulong correctTotal = 444;
+
+            // Mock
             var events = new FakeApplicationEventsService();
             var svc = new TransactionsService(db, events);
 
@@ -163,14 +190,13 @@ public class TransactionServiceTests
                 AmountTotalCents = 1111
             });
 
-            ulong correctTotal = 444;
-
+            //Act
             var serviceResult = await svc.GetTransactionsTotalCentsAsync();
 
+            // Assert
             serviceResult.IsSuccess.Should().BeTrue();
             serviceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
             events.Added.Should().HaveCount(3);
-
             serviceResult.Object.Should().Be(correctTotal);
         }
     }
@@ -182,12 +208,16 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
-            var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
-
+            // Arrange
             var uid1 = Guid.Parse("00000001-4496-4B99-A0C3-111F9AB55149");
             var uid2 = Guid.Parse("00000002-4496-4B99-A0C3-111F9AB55149");
             var uid3 = Guid.Parse("00000003-4496-4B99-A0C3-111F9AB55149");
+
+            // Mock
+            var events = new FakeApplicationEventsService();
+
+            // Act
+            var svc = new TransactionsService(db, events);
 
             await svc.AddAsync(new TransactionModel
             {
@@ -215,10 +245,10 @@ public class TransactionServiceTests
 
             var serviceResult = await svc.GetAllAsync();
 
+            // Assert
             serviceResult.IsSuccess.Should().BeTrue();
             serviceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
             events.Added.Count().Should().Be(3);
-
             serviceResult.Object.Should().HaveCount(2);
             serviceResult.Object.Should().Contain(p => p.UniqueIdentifier == uid1);
             serviceResult.Object.Should().Contain(p => p.UniqueIdentifier == uid2);
@@ -232,12 +262,16 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
-            var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
-
+            // Arrange
             var uid1 = Guid.Parse("00000001-4496-4B99-A0C3-111F9AB55149");
             var uid2 = Guid.Parse("00000002-4496-4B99-A0C3-111F9AB55149");
             var uid3 = Guid.Parse("00000003-4496-4B99-A0C3-111F9AB55149");
+
+            // Mock
+            var events = new FakeApplicationEventsService();
+
+            // Act
+            var svc = new TransactionsService(db, events);
 
             var r1 = await svc.AddAsync(new TransactionModel
             {
@@ -265,11 +299,11 @@ public class TransactionServiceTests
 
             var serviceResult = await svc.GetByGuidAsync(uid2);
 
+            // Assert
             serviceResult.IsSuccess.Should().BeTrue();
             serviceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
             serviceResult.Object.Should().NotBeNull();
             serviceResult.Object.UniqueIdentifier.Should().Be(uid2);
-
             events.Added.Count().Should().Be(3);
             events.Deleted.Count().Should().Be(0);
         }
@@ -282,12 +316,16 @@ public class TransactionServiceTests
         await using (connection)
         await using (db)
         {
-            var events = new FakeApplicationEventsService();
-            var svc = new TransactionsService(db, events);
-
+            // Arrange
             var uid1 = Guid.Parse("00000001-4496-4B99-A0C3-111F9AB55149");
             var uid2 = Guid.Parse("00000002-4496-4B99-A0C3-111F9AB55149");
             var uid3 = Guid.Parse("00000003-4496-4B99-A0C3-111F9AB55149");
+
+            // Mock
+            var events = new FakeApplicationEventsService();
+
+            // Act
+            var svc = new TransactionsService(db, events);
 
             var r1 = await svc.AddAsync(new TransactionModel
             {
@@ -314,16 +352,14 @@ public class TransactionServiceTests
             });
 
             var deleteServiceResult = await svc.DeleteAsync(uid2);
-
-            deleteServiceResult.IsSuccess.Should().BeTrue();
-            deleteServiceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
-
             var serviceResult = await svc.GetByGuidAsync(uid2);
 
+            // Assert
+            deleteServiceResult.IsSuccess.Should().BeTrue();
+            deleteServiceResult.ErrorMessage.Should().BeNullOrWhiteSpace();
             serviceResult.IsSuccess.Should().BeFalse();
             serviceResult.ErrorMessage.Should().Contain("Model does not exist");
             serviceResult.Object.Should().BeNull();
-
             events.Added.Count().Should().Be(3);
             events.Deleted.Count().Should().Be(1);
         }
