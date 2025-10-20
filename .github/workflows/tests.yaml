@@ -12,6 +12,7 @@ jobs:
         with:
           dotnet-version: '9.x'
       - name: Restore
+        working-directory: ./Transwextions
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
