@@ -6,6 +6,11 @@ using Transwextions.Data.Payloads;
 
 namespace Transwextions.App.Services;
 
+/// <summary>
+/// Provides methods for retrieving currency codes and exchange rate data from the U.S. Treasury Reporting Rates of
+/// Exchange API.
+/// API Documentation: https://fiscaldata.treasury.gov/api-documentation/
+/// </summary>
 public class TreasuryReportingRatesService : ITreasuryReportingRatesService
 {
     protected readonly HttpClient _httpClient;

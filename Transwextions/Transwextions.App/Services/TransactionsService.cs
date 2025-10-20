@@ -29,6 +29,10 @@ public class TransactionsService : ITransactionService
         return ServiceResult<List<TransactionModel>>.Success(result);
     }
 
+    /// <summary>
+    /// Asynchronously calculates the total amount, in cents, of all non-deleted transactions.
+    /// </summary>
+    /// <returns>Returns the sum of all (NON-DELETED) transactions in cents.</returns>
     public async Task<ServiceResult<ulong?>> GetTransactionsTotalCentsAsync()
     {
         var result = await _context.Transactions
@@ -55,6 +59,7 @@ public class TransactionsService : ITransactionService
             if (model.AmountTotalCents < 0)
                 return ServiceResult<object>.Failure("Model AmountTotalCents is a negative value.");
 
+            // Generate a new GUID if one is not provided.
             Guid guid = model.UniqueIdentifier ?? Guid.NewGuid();
             model.UniqueIdentifier = guid;
             model.TransactionDateUtc = transactionDateOverride ?? DateTime.UtcNow;
@@ -67,9 +72,11 @@ public class TransactionsService : ITransactionService
                 return ServiceResult<object>.Failure("A transaction with the same UniqueIdentifier already exists.");
             }
 
+            // Add and Save
             await _context.Transactions.AddAsync(model);
             await _context.SaveChangesAsync();
 
+            // Verify Added Model
             var addedModel = await GetByGuidAsync(guid, true);
 
             if (addedModel != null && addedModel.IsSuccess && addedModel.Object != null)
@@ -96,10 +103,11 @@ public class TransactionsService : ITransactionService
         if(model == null)
             return ServiceResult<object>.Failure("Model does not exist.");
 
+        // Apply Deletion
         model.IsDeleted = true;
-
         await _context.SaveChangesAsync();
 
+        // Verify Deletion
         var deletedModel = await GetByGuidAsync(transactionGuid);
 
         if(deletedModel == null || deletedModel.IsSuccess == false || deletedModel.Object == null)

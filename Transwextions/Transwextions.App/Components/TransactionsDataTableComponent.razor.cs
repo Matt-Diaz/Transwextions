@@ -27,6 +27,11 @@ public partial class TransactionsDataTableComponent : IDisposable
     private bool IsLoading;
     IEnumerable<TransactionModel> TransactionsData = Array.Empty<TransactionModel>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
     private async void OnTransactionAdded(TransactionModel model)
     {
         TransactionsData = TransactionsData.Append(model);
@@ -39,16 +44,13 @@ public partial class TransactionsDataTableComponent : IDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
-
-    async Task LoadData()
+    private async Task LoadData()
     {
         IsLoading = true;
 
         var result = await _transactionService.GetAllAsync();
+
+        // Maybe Notify Error & Return
         if (!result.IsSuccess || result.Object is null)
         {
             _notificationService.Notify(new NotificationMessage
@@ -69,21 +71,21 @@ public partial class TransactionsDataTableComponent : IDisposable
 
     private async void View(TransactionModel model)
     {
-        //_notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "View", Detail = $"{t.Id}" });
-        var result = await _dialogService.OpenAsync<ViewTransactionComponent>("View Transaction",
-        parameters: new Dictionary<string, object?>
-        {
-            { "Transaction", model },
-            { "CurrenciesData", CurrenciesData }
-        },
-        options: new DialogOptions()
-        {
-            ShowTitle = true,
-            ShowClose = true
-        });
+        var result = await _dialogService.OpenAsync<ViewTransactionComponent>(
+            "View Transaction",
+            parameters: new Dictionary<string, object?>
+            {
+                { "Transaction", model },
+                { "CurrenciesData", CurrenciesData }
+            },
+            options: new DialogOptions()
+            {
+                ShowTitle = true,
+                ShowClose = true
+            });
     }
 
-    async Task Delete(TransactionModel t)
+    private async Task Delete(TransactionModel t)
     {
         _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Deleted", Detail = $"{t.Id}" });
     }

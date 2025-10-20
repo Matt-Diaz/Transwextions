@@ -1,6 +1,6 @@
 ﻿@using Transwextions.Data.Models
 <div class="component">
-    <RadzenTemplateForm TItem="PayNowModel" Data="Model" InvalidSubmit="OnInvalidSubmit" Submit="OnValidSubmit">
+    <RadzenTemplateForm TItem="PayNowModel" Data="Model" Submit="OnValidSubmit">
         <RadzenStack Orientation="Orientation.Vertical">
             <RadzenText TextAlign="TextAlign.Center" Text="Enter payment information!" TextStyle="TextStyle.Caption" />
             <RadzenFormField Variant="Variant.Text" Style="font-size: 30px;">
@@ -42,11 +42,6 @@
     private void CancelButton_OnClick()
     {
         _dialogService.Close(null);
-    }
-
-    private void OnInvalidSubmit()
-    {
-
     }
 
     private void OnValidSubmit()

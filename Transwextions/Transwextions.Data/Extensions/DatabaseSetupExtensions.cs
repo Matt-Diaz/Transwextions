@@ -32,7 +32,7 @@ public static class DatabaseSetupExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static async Task MigrateAndSeedAsync(
+    public static async Task MigrateDatabase(
         this IServiceProvider services)
     {
         using var scope = services.CreateScope();

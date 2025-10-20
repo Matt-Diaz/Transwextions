@@ -35,10 +35,25 @@ public partial class ViewTransactionComponent
         }
     }
 
+    private async void TransactionDateOverride_OnChange(DateTime value)
+    {
+        // Update Transaction Date Override, Reload Data, and Convert Curreny
+        TransactionDateOverride = value;
+        ExchangeRatesData = await LoadExchangeRatesData();
+        await ApplyCurrencyConversion(SelectedCurrency);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async void CurrencyDropdown_OnChange(string value)
+    {
+        await ApplyCurrencyConversion(value);
+    }
+
     public async Task<List<ExchangeRateModel>?> LoadExchangeRatesData()
     {
         IsLoadingConversionData = true;
 
+        // Validate Transaction
         if (Transaction == null)
         {
             _notificationService.Notify(Radzen.NotificationSeverity.Error, "Transaction was not found.");
@@ -46,6 +61,7 @@ public partial class ViewTransactionComponent
             IsLoadingConversionData = false;
             return null;
         }
+        // Load Exchange Rates Data for the past 6 months from the Transaction Date Override (Transaction Date if not set)
         var transactionDate = TransactionDateOverride.Date;
         var minDate = transactionDate.AddMonths(-6);
         var maxDate = transactionDate;
@@ -72,19 +88,6 @@ public partial class ViewTransactionComponent
         return exchangeRatesResult.Object.OrderBy(p => p.RecordDate).ToList();
     }
 
-    private async void TransactionDateOverride_OnChange(DateTime value)
-    {
-        TransactionDateOverride = value;
-        ExchangeRatesData = await LoadExchangeRatesData();
-        await ApplyCurrencyConversion(SelectedCurrency);
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public async void CurrencyDropdown_OnChange(string value)
-    {
-        await ApplyCurrencyConversion(value);
-    }
-
     public async Task ApplyCurrencyConversion(string currency)
     {
         SelectedCurrency = currency;
@@ -95,7 +98,7 @@ public partial class ViewTransactionComponent
             return;
         }
 
-
+        // Find Exchange Rate for Selected Currency - Clear and notify if not found
         if (ExchangeRatesData != null && Transaction != null)
         {
             var exchange = ExchangeRatesData.FirstOrDefault(p => p.CountryCurrency == SelectedCurrency);

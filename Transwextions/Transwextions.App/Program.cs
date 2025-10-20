@@ -8,14 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAppDatabase(builder.Environment);
 
-
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
 builder.Services.AddHttpClient();
-
 builder.Services.AddSingleton<IUserStateService, UserStateService>();
 builder.Services.AddScoped<ITransactionService, TransactionsService>();
 builder.Services.AddScoped<IApplicationEventsService, ApplicationEventsService>();
@@ -24,7 +22,7 @@ builder.Services.AddScoped<ITreasuryReportingRatesService, TreasuryReportingRate
 var app = builder.Build();
 
 // Migrate database.
-await app.Services.MigrateAndSeedAsync();
+await app.Services.MigrateDatabase();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
