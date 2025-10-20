@@ -7,6 +7,6 @@ public class TransactionModel
     public string Description { get; set; } = string.Empty;
     public ulong AmountTotalCents { get; set; }
     public DateTime TransactionDateUtc { get; set; }
-    public Guid UniqueIdentifier { get; set; }
+    public Guid? UniqueIdentifier { get; set; }
     public bool IsDeleted { get; set; }
 }
