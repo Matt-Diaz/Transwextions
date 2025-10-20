@@ -29,7 +29,7 @@ public class TransactionsService : ITransactionService
         return ServiceResult<List<TransactionModel>>.Success(result);
     }
 
-    public async Task<ServiceResult<ulong?>> GetTransactionsTotalCents()
+    public async Task<ServiceResult<ulong?>> GetTransactionsTotalCentsAsync()
     {
         var result = await _context.Transactions
             .AsNoTracking()
