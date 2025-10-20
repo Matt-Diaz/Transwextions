@@ -21,7 +21,7 @@ public partial class UsernameInputComponent
 
         for (int i = 1; i <= 20; i++)
         {
-            result.Add($"images/avatars/avatar-{i.ToString()}.png");
+            result.Add($"images/avatars/avatar-{i.ToString()}.webp");
         }
 
         return result;

@@ -26,7 +26,7 @@ public partial class MainLayout : IDisposable
     private bool IsLoggedIn { get; set; } = false;
     private bool SidebarExpanded = true;
     private string Username { get; set; } = string.Empty;
-    private string AvatarImagePath { get; set; } = "./images/avatar-placeholder.png";
+    private string AvatarImagePath { get; set; } = "./images/avatars/placeholder.webp";
     private ulong TransactionsTotalCents { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
