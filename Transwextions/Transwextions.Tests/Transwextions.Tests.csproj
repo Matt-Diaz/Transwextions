@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -19,6 +19,11 @@
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
     <PackageReference Include="RichardSzalay.MockHttp" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transwextions.App\Transwextions.App.csproj" />
+    <ProjectReference Include="..\Transwextions.Data\Transwextions.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

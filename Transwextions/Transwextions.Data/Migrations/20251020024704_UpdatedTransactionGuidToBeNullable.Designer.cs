@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transwextions.Data;
 
@@ -10,9 +11,11 @@ using Transwextions.Data;
 namespace Transwextions.Data.Migrations
 {
     [DbContext(typeof(TranswextionsContext))]
-    partial class TranswextionsContextModelSnapshot : ModelSnapshot
+    [Migration("20251020024704_UpdatedTransactionGuidToBeNullable")]
+    partial class UpdatedTransactionGuidToBeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
