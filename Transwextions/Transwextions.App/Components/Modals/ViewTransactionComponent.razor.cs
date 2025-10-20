@@ -24,7 +24,7 @@ public partial class ViewTransactionComponent
     public DateOnly ExchangeRecordDate { get; set; }
     public List<ExchangeRateModel>? ExchangeRatesData { get; set; }
     public DateTime TransactionDateOverride { get; set; }
-    public bool IsLoadingConversionData { get; set; }
+    public bool IsLoadingConversionData { get; set; } = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -85,6 +85,8 @@ public partial class ViewTransactionComponent
 
         IsLoadingConversionData = false;
 
+        await InvokeAsync(StateHasChanged);
+
         return exchangeRatesResult.Object.OrderBy(p => p.RecordDate).ToList();
     }
 
@@ -101,10 +103,25 @@ public partial class ViewTransactionComponent
         // Find Exchange Rate for Selected Currency - Clear and notify if not found
         if (ExchangeRatesData != null && Transaction != null)
         {
-            var exchange = ExchangeRatesData.FirstOrDefault(p => p.CountryCurrency == SelectedCurrency);
-
+            var transactionDate = DateOnly.FromDateTime(TransactionDateOverride.Date);
+            var exchange = ExchangeRatesData
+                .Where(p => p.RecordDate <= transactionDate)
+                .Where(p => p.RecordDate >= transactionDate.AddMonths(-6))
+                .FirstOrDefault(p => p.CountryCurrency == SelectedCurrency);
+            
             if (exchange != null)
             {
+                if(exchange.ExchangeRate <= 0)
+                {
+                    ExchangeRate = null;
+                    _notificationService.Notify(
+                        Radzen.NotificationSeverity.Error,
+                        "The conversion rate for this currency is invalid.",
+                        string.Empty,
+                        TimeSpan.FromSeconds(5));
+                    return;
+                }
+
                 ExchangeRate = exchange.ExchangeRate;
                 ExchangeRecordDate = exchange.RecordDate;
             }
