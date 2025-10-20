@@ -45,7 +45,7 @@ public partial class MainLayout : IDisposable
   
     private async Task<ulong> GetTransactionsTotalCents()
     {
-        var result = await _transactionService.GetTransactionsTotalCents();
+        var result = await _transactionService.GetTransactionsTotalCentsAsync();
 
         if (result.IsSuccess && result.Object != null)
         {

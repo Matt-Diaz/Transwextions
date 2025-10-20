@@ -1,5 +1,4 @@
-﻿using Transwextions.App.Components;
-using Transwextions.App.Services.Interfaces;
+﻿using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Models;
 
 namespace Transwextions.App.Services;
