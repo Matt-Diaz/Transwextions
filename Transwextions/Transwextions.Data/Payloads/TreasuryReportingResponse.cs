@@ -7,23 +7,8 @@ public class TreasuryReportingResponse
     [JsonPropertyName("data")]
     public List<RateOfExchangeObject> Data { get; init; } = [];
 
-    [JsonPropertyName("meta")]
-    public MetaObject Meta { get; init; } = new();
-
     [JsonPropertyName("links")]
     public LinksObject Links { get; init; } = new();
-
-    public class MetaObject
-    {
-        [JsonPropertyName("count")] 
-        public int Count { get; init; }
-
-        [JsonPropertyName("total-count")] 
-        public int TotalCount { get; init; }
-
-        [JsonPropertyName("total-pages")] 
-        public int TotalPages { get; init; }
-    }
 
     public sealed class LinksObject
     {

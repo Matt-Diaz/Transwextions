@@ -9,6 +9,7 @@ namespace Transwextions.App.Services;
 public class TreasuryReportingRatesService : ITreasuryReportingRatesService
 {
     protected readonly HttpClient _httpClient;
+    protected const int MAX_PAGE_LOOPS = 100;
 
     public TreasuryReportingRatesService(HttpClient httpClient)
     {
@@ -26,15 +27,26 @@ public class TreasuryReportingRatesService : ITreasuryReportingRatesService
      CancellationToken cancellationToken = default)
     {
         var baseUrl = TreasuryReportingRatesAPIEndpoints.GetAllCurrenciesEndpoint;
-
         var currencies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var loopCount = 0;
+        var requestedUrls = new List<string>();
         string? currentUrl = baseUrl;
 
         try
         {
             while (!string.IsNullOrEmpty(currentUrl))
             {
+                if (loopCount >= MAX_PAGE_LOOPS)
+                    return ServiceResult<List<string>>.Failure("Exceeded maximum page loop limit: " + MAX_PAGE_LOOPS.ToString());
+
+                loopCount++;
+
+                if (requestedUrls.Contains(currentUrl))
+                    continue;
+
                 using var response = await _httpClient.GetAsync(currentUrl, cancellationToken);
+
+                requestedUrls.Add(currentUrl);
 
                 if (!response.IsSuccessStatusCode)
                     return ServiceResult<List<string>>.Failure($"HTTP {(int)response.StatusCode}");
@@ -45,6 +57,9 @@ public class TreasuryReportingRatesService : ITreasuryReportingRatesService
 
                 if (payload == null)
                     return ServiceResult<List<string>>.Failure("Failed to deserialize Treasury response.");
+
+                if(payload.Data == null)
+                    return ServiceResult<List<string>>.Failure("Treasury response contained no data.");
 
                 // Grab currency data from payload.
                 foreach (var row in payload.Data)
@@ -68,6 +83,10 @@ public class TreasuryReportingRatesService : ITreasuryReportingRatesService
         catch (OperationCanceledException)
         {
             return ServiceResult<List<string>>.Failure($"Error retrieving currencies: Operation canceled.");
+        }
+        catch(JsonException ex)
+        {
+            return ServiceResult<List<string>>.Failure($"Failed to deserialize Treasury response: " + ex.Message);
         }
         catch (Exception ex)
         {
@@ -94,13 +113,25 @@ public class TreasuryReportingRatesService : ITreasuryReportingRatesService
         var maxDateFormatted = MaxDate.ToString("yyyy-MM-dd");
         var baseUrl = string.Format(TreasuryReportingRatesAPIEndpoints.GetAllRatesWithinDateRangeEndpoint, minDateFormatted, maxDateFormatted);
         var exchangeRates = new HashSet<ExchangeRateModel>();
+        var loopCount = 0;
+        var requestedUrls = new List<string>();
         string? currentUrl = baseUrl;
 
         try
         {
             while (!string.IsNullOrEmpty(currentUrl))
             {
+                if (loopCount >= MAX_PAGE_LOOPS)
+                    return ServiceResult<List<ExchangeRateModel>>.Failure("Exceeded maximum page loop limit: " + MAX_PAGE_LOOPS.ToString());
+
+                loopCount++;
+
+                if (requestedUrls.Contains(currentUrl))
+                    continue;
+
                 using var response = await _httpClient.GetAsync(currentUrl, cancellationToken);
+
+                requestedUrls.Add(currentUrl);
 
                 if (!response.IsSuccessStatusCode)
                     return ServiceResult<List<ExchangeRateModel>>.Failure($"HTTP {(int)response.StatusCode}");
@@ -142,6 +173,10 @@ public class TreasuryReportingRatesService : ITreasuryReportingRatesService
         catch (OperationCanceledException)
         {
             return ServiceResult<List<ExchangeRateModel>>.Failure($"Error retrieving exchange rate data: Operation canceled.");
+        }
+        catch (JsonException ex)
+        {
+            return ServiceResult<List<ExchangeRateModel>>.Failure($"Failed to deserialize Treasury response: " + ex.Message);
         }
         catch (Exception ex)
         {
