@@ -17,19 +17,19 @@ Built with Blazor Server, Entity Framework Core, and SQLite, designed for easy s
 - Create and store  transactions with:
   - **Description** (required, max 50 characters)
   - **Transaction date** (valid date format)
-  - **Purchase amount** (positive, rounded to nearest cent)
+  - **Purchase amount** (positive, rounded to nearest cent (Stored as Cents))
   - **Auto-generated unique identifier (GUID)**
 - Persist all transactions in a **local SQLite database** (no setup required)
 - **Automatic migration update** on first run — database is created and updated automatically
 
 ### Currency Conversion
-- Retrieve stored transactions in any supported currency
+- Retrieve stored transactions and convert to any supported currency
 - Integrates with the **U.S. Treasury Reporting Rates of Exchange API**
 - Selects the **most recent exchange rate ≤ purchase date** within a 6-month window
 - Displays:
   - Original USD amount
   - Exchange rate used
-  - Rate date
+  - Rate record date
   - Converted amount (rounded to 2 decimals)
 - Returns a clear error if no rate exists within the 6-month window
 
@@ -37,7 +37,6 @@ Built with Blazor Server, Entity Framework Core, and SQLite, designed for easy s
 - Enforces data integrity using **Entity Framework Core constraints**:
   - Description length limit
   - Positive amounts only
-- All arithmetic uses **`decimal`** types for precise currency math
 
 ### Technical Features
 - Built with **Blazor Server (.NET 9)** and **Entity Framework Core**
