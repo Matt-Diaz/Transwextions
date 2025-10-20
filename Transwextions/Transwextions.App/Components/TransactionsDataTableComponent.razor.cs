@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Radzen;
 using Transwextions.App.Components.Modals;
 using Transwextions.App.Services.Interfaces;
@@ -84,9 +85,48 @@ public partial class TransactionsDataTableComponent : IDisposable
             });
     }
 
-    private async Task Delete(TransactionModel t)
+    private async Task Delete(TransactionModel model)
     {
-        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Deleted", Detail = $"{t.Id}" });
+        if(model != null && model.UniqueIdentifier != null)
+        {
+            var deleteResult = await _transactionService.DeleteAsync((Guid)model.UniqueIdentifier!);
+
+            if (deleteResult != null)
+            {
+                if (deleteResult.IsSuccess)
+                {
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Success",
+                        Detail = "Transaction deleted successfully.",
+                        Duration = 4000
+                    });
+
+                    _applicationEventsService.NotifyTransactionDeleted(model);
+                }
+                else
+                {
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Failed to delete transaction: " + deleteResult.ErrorMessage,
+                        Duration = 4000
+                    });
+                }
+            }
+        }
+        else
+        {
+            _notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Transaction model is null.",
+                Duration = 4000
+            });
+        }
     }
 
     public void Dispose()
