@@ -6,13 +6,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Transwextions
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
       - name: Restore
-        working-directory: ./Transwextions
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
