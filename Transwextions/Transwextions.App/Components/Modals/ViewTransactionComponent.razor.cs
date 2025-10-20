@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Globalization;
-using System.Threading.Tasks;
-using Transwextions.App.Services;
-using Transwextions.Data.Constants;
+using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Models;
 
 namespace Transwextions.App.Components.Modals;
@@ -15,9 +12,9 @@ public partial class ViewTransactionComponent
     [Parameter]
     public List<string> CurrenciesData { get; set; } = new();
 
-    protected readonly TreasuryReportingRatesService _treasuryReportingRatesService;
+    protected readonly ITreasuryReportingRatesService _treasuryReportingRatesService;
 
-    public ViewTransactionComponent(TreasuryReportingRatesService treasuryReportingRatesService)
+    public ViewTransactionComponent(ITreasuryReportingRatesService treasuryReportingRatesService)
     {
         _treasuryReportingRatesService = treasuryReportingRatesService;
     }

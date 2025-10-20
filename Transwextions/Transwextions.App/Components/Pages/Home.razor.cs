@@ -1,13 +1,14 @@
 ﻿using Radzen;
 using Transwextions.App.Services;
+using Transwextions.App.Services.Interfaces;
 
 namespace Transwextions.App.Components.Pages;
 
 public partial class Home
 {
-    protected readonly TreasuryReportingRatesService _treasuryReportingRatesService;
+    protected readonly ITreasuryReportingRatesService _treasuryReportingRatesService;
 
-    public Home(TreasuryReportingRatesService treasuryReportingRatesService)
+    public Home(ITreasuryReportingRatesService treasuryReportingRatesService)
     {
         _treasuryReportingRatesService = treasuryReportingRatesService;
     }

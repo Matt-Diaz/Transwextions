@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Transwextions.App.Services.Interfaces;
 using Transwextions.Data.Constants;
 using Transwextions.Data.Models;
 using Transwextions.Data.Payloads;
 
 namespace Transwextions.App.Services;
 
-public class TreasuryReportingRatesService
+public class TreasuryReportingRatesService : ITreasuryReportingRatesService
 {
     protected readonly HttpClient _httpClient;
 

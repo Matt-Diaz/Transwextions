@@ -19,10 +19,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IUserStateService, UserStateService>();
 builder.Services.AddScoped<ITransactionService, TransactionsService>();
 builder.Services.AddScoped<IApplicationEventsService, ApplicationEventsService>();
-
-// Don't forget to add an interface for this service
-builder.Services.AddScoped<TreasuryReportingRatesService>();
-
+builder.Services.AddScoped<ITreasuryReportingRatesService, TreasuryReportingRatesService>();
 
 var app = builder.Build();
 
