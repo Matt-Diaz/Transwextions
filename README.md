@@ -1,3 +1,7 @@
+# ***This project was developed as part of a coding assessment and is for demonstration purposes only. It is not affiliated with any company or organization.***
+
+
+
 # Transwextions
 A simple purchase tracking application that stores transactions in USD and retrieves them allowing the ability to convert into other currencies using the U.S. Treasury Reporting Rates of Exchange API.
 Built with Blazor Server, Entity Framework Core, and SQLite, designed for easy setup (No manual database/server configuration required).
